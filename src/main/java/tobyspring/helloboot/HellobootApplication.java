@@ -15,15 +15,19 @@ public class HellobootApplication {
     public static void main(String[] args) {
         TomcatServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
         WebServer webServer = serverFactory.getWebServer(servletContext -> {
+            HelloController helloController = new HelloController();
+
             servletContext.addServlet("frontcontroller", new HttpServlet() {
                 @Override
                 protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-                    if(req.getRequestURI().equals("/hello") && req.getMethod().equals(HttpMethod.GET.name())){
-                        String name = req.getParameter("name");
+                    if(req.getRequestURI().equals("/hello") && req.getMethod().equals(HttpMethod.GET.name())){ //mapping
+                        String name = req.getParameter("name"); // binding
+
+                        String ret = helloController.hello(name);
 
                         resp.setStatus(HttpServletResponse.SC_OK);
                         resp.setContentType("text/plain");
-                        resp.getWriter().println("Hello " + name);
+                        resp.getWriter().println(ret);
                     }else {
                         resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     }
