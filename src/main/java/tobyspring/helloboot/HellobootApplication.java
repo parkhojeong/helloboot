@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
+import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
 
@@ -14,16 +15,21 @@ public class HellobootApplication {
     public static void main(String[] args) {
         TomcatServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
         WebServer webServer = serverFactory.getWebServer(servletContext -> {
-            servletContext.addServlet("hello", new HttpServlet() {
+            servletContext.addServlet("frontcontroller", new HttpServlet() {
                 @Override
                 protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-                    String name = req.getParameter("name");
+                    if(req.getRequestURI().equals("/hello") && req.getMethod().equals(HttpMethod.GET.name())){
+                        String name = req.getParameter("name");
 
-                    resp.setStatus(HttpServletResponse.SC_OK);
-                    resp.setContentType("text/plain");
-                    resp.getWriter().println("Hello " + name);
+                        resp.setStatus(HttpServletResponse.SC_OK);
+                        resp.setContentType("text/plain");
+                        resp.getWriter().println("Hello " + name);
+                    }else {
+                        resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    }
+
                 }
-            }).addMapping("/hello");
+            }).addMapping("/*");
         });
         webServer.start();
     }
