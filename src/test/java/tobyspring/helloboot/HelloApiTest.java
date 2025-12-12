@@ -6,22 +6,27 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 public class HelloApiTest {
     @Test
     void helloApi() {
-        // http localhost:8080/hello?name=Spring
         TestRestTemplate rest = new TestRestTemplate();
 
         ResponseEntity<String> res =
                 rest.getForEntity("http://localhost:8080/hello?name={name}", String.class, "Spring");
 
-        // status 200
         Assertions.assertThat(res.getStatusCode()).isEqualTo(HttpStatus.OK);
-        // header(content-type) text/plain
         Assertions.assertThat(res.getHeaders().getContentType().toString()).startsWith(MediaType.TEXT_PLAIN_VALUE);
-        // body Hello Spring
         Assertions.assertThat(res.getBody()).isEqualTo("Hello Spring");
+    }
+
+    @Test
+    void failsHelloApi() {
+        TestRestTemplate rest = new TestRestTemplate();
+
+        ResponseEntity<String> res =
+                rest.getForEntity("http://localhost:8080/hello?name=", String.class);
+
+        Assertions.assertThat(res.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
