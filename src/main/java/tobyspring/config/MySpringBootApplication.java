@@ -1,6 +1,7 @@
-package tobyspring.helloboot;
+package tobyspring.config;
 
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,5 +14,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Configuration
 @ComponentScan
-public @interface MySpringBootAnnotation {
+@EnableAutoConfiguration
+public @interface MySpringBootApplication {
 }
